@@ -1,16 +1,57 @@
-const express = require('express')
-const app = express()
-
-const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://general-access:<qaz1wsx2>@cluster0.mhu4h.mongodb.net/user-data?retryWrites=true&w=majority')
 
 const port = 3001
 
+const express = require('express')
+const app = express()
 app.use(express.json())
 
-app.get('/health', (req, res) => {
-    //res.send('HEALTH: OK')
-    res.json({status: 'ok'})
+const cors = require('cors')
+app.use(cors())
+
+const mongoose = require('mongoose')
+const CONNECTION_URL = 'mongodb+srv://gayathri:abeona123@cluster0.e3czw.mongodb.net/abeona-mvp-dummy?retryWrites=true&w=majority'
+mongoose.connect(CONNECTION_URL)
+
+const User = require('./models/user.model')
+
+const jwt = require('jsonwebtoken')
+
+app.post('/api/register', async (req, res) => {
+    console.log(req.body)
+    try {
+        await User.create({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email, 
+            password: req.body.password
+        })
+        // res.send(user)
+        res.json({status: 'ok'})
+    } catch (error) {
+        res.json({status: 'error', error: "Duplicate email"})
+    }
+})
+
+app.post('/api/login', async (req, res) => {
+    const user = await User.findOne({
+        email: req.body.email, 
+        password: req.body.password
+    })
+
+    if (user) {
+        const token = jwt.sign(
+            {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email
+            },
+            "secretToken"
+        )
+        return res.json({status: 'ok', user: token})
+    } else {
+        return res.json({status: 'error', user: false})
+    }
+
 })
 
 app.listen(port, () => {
