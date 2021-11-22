@@ -14,6 +14,7 @@ mongoose.connect(CONNECTION_URL)
 
 const User = require('./models/user.model')
 const Group = require('./models/group.model')
+const Individual = require('./models/individual.model')
 
 const jwt = require('jsonwebtoken')
 
@@ -71,6 +72,23 @@ app.post('/api/creategroup', async (req, res) => {
         res.json({status: 'error', error: "invalid form input"})
     }
 
+})
+
+app.post('/api/individualform', async (req, res) => {
+    console.log(req.body)
+    try {
+        await Individual.create({
+            budget: req.body.maxPrice, 
+            arrival: req.body.arrivalTime, 
+            departure: req.body.departureTime, 
+            arrivalTime: req.body.arriveOn, 
+            departureTime: req.body.departOn, 
+            flightPreference: req.body.flightPreference,   
+        })
+        res.json({status: 'ok'})
+    } catch (error) {
+        res.json({status: 'error', error: "invalid form input"})
+    }
 })
 
 app.listen(port, () => {

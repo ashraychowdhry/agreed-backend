@@ -6,9 +6,6 @@ const Group = new mongoose.Schema({
     maxPrice: {type: String, required: true},
     earliestDate: {type: Object, required: true},
     latestDate: {type: Object, required: true},
-    quote: {type: String},
-    
-
 }, {
     collection: 'group-data'
 })
