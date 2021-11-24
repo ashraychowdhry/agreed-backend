@@ -6,9 +6,12 @@ const Group = new mongoose.Schema({
     maxPrice: {type: String, required: true},
     earliestDate: {type: Object, required: true},
     latestDate: {type: Object, required: true},
+
 }, {
     collection: 'group-data'
 })
+
+ 
 
 const model = mongoose.model('Groups', Group)
 module.exports = model

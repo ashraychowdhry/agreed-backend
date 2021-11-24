@@ -1,5 +1,5 @@
 
-const port = 3001
+const port = process.env.port || 3001
 
 const express = require('express')
 const app = express()
@@ -8,12 +8,17 @@ app.use(express.json())
 const cors = require('cors')
 app.use(cors())
 
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 const mongoose = require('mongoose')
 const CONNECTION_URL = 'mongodb+srv://gayathri:abeona123@cluster0.e3czw.mongodb.net/abeona-mvp-dummy?retryWrites=true&w=majority'
 mongoose.connect(CONNECTION_URL)
 
 const User = require('./models/user.model')
 const Group = require('./models/group.model')
+const Pin = require('./models/pin.model')
 const Individual = require('./models/individual.model')
 
 const jwt = require('jsonwebtoken')
@@ -56,6 +61,19 @@ app.post('/api/login', async (req, res) => {
 
 })
 
+app.post('/api/dashboard', async (req, res) => {
+    
+     
+        const foundPin = await Pin.findOne({securedPin: req.body.securedPin})
+        if (foundPin) {
+            return res.json({status: 'ok' , foundPin: true})
+        } else {
+        console.log(foundPin)
+        console.log(req.body.securedPin)
+        return res.json({status: 'error', foundPin: false})
+    }
+})
+
 app.post('/api/creategroup', async (req, res) => {
 
     console.log(req.body)
@@ -66,6 +84,10 @@ app.post('/api/creategroup', async (req, res) => {
             maxPrice: req.body.maxPrice,
             earliestDate: req.body.earliestDate,
             latestDate: req.body.latestDate,
+            
+        })
+        await Pin.create({
+            securedPin: req.body.securedPin
         })
         res.json({status: 'ok'})
     } catch (error) {
