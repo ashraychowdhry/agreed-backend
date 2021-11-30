@@ -161,3 +161,30 @@ app.post('/api/getusergroups', async (req, res) => {
 app.listen(port, () => {
     console.log('Server listening to ' + port)
 })
+// //stripe payments
+// const stripe = require("stripe")('pk_test_51K1ZoeGwb0i41CKwBGF7XuFuVAZhTP1QlLNv5l6z917biXKAJQYTVy0K0V0lE2AqS9vDXDJUX2aTv1A4nmZpMz5w00wXoKVI6R');
+// const calculateOrderAmount = (items) => {
+//     // Replace this constant with a calculation of the order's amount
+//     // Calculate the order total on the server to prevent
+//     // people from directly manipulating the amount on the client
+//     //leaving the 1400 just to test but we should have a variable called flight_price
+//     return (1400+5);
+//   };
+//   app.post("/create-payment-intent", async (req, res) => {
+//     const { items } = req.body;
+  
+//     // Create a PaymentIntent with the order amount and currency
+//     const paymentIntent = await stripe.paymentIntents.create({
+//       amount: calculateOrderAmount(items),
+//       currency: "usd",
+//       automatic_payment_methods: {
+//         enabled: true,
+//       },
+//     });
+  
+//     res.send({
+//       clientSecret: paymentIntent.client_secret,
+//     });
+//   });
+  
+//   app.listen(4242, () => console.log("Node server listening on port 4242!"));
