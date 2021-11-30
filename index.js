@@ -33,7 +33,9 @@ app.post('/api/register', async (req, res) => {
         })
         // res.send(user)
         res.json({status: 'ok'})
+        console.log('User created')
     } catch (error) {
+        console.log(error)
         res.json({status: 'error', error: "Duplicate email"})
     }
 })
@@ -85,7 +87,7 @@ app.post('/api/creategroup', async (req, res) => {
             earliestDate: req.body.earliestDate,
             latestDate: req.body.latestDate,
             groupID: id,
-            users: req.body.user
+            users: req.body.userID
             
         })
         res.json({status: 'ok', id: id})
@@ -114,12 +116,15 @@ app.post('/api/individualform', async (req, res) => {
     console.log(req.body)
     try {
         await Individual.create({
-            budget: req.body.maxPrice, 
-            arrival: req.body.arrivalTime, 
-            departure: req.body.departureTime, 
-            arrivalTime: req.body.arriveOn, 
-            departureTime: req.body.departOn, 
-            flightPreference: req.body.flightPreference,   
+            budget: req.body.budget,
+            arrivalTime: req.body.arrivalTime,
+            departureTime: req.body.departureTime,
+            flightPreference: req.body.flightPreference,
+            userId: req.body.userID,
+            groupID: req.body.groupID,
+            arrival: req.body.arrival,
+            departure: req.body.departure,
+             
         })
         res.json({status: 'ok'})
     } catch (error) {
@@ -139,10 +144,12 @@ app.post('/api/joingroup', async (req, res) => {
     }
 })
 
-app.get('/api/getusergroups', async (req, res) => {
+app.post('/api/getusergroups', async (req, res) => {
     try {
-        const users = await Group.find({ users: req.body.userId })
-        res.json({status: 'ok', users})
+        console.log(req.body.userID)
+        const groups = await Group.find({ users: req.body.userId })
+        console.log(groups)
+        res.json({status: 'ok', groups})
     } catch (error) {
         res.json({status: 'error', error: "invalid input"})
     }
