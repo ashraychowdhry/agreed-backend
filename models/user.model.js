@@ -5,7 +5,12 @@ const User = new mongoose.Schema({
     lastName: {type: String, required: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    quote: {type: String},
+    venmo: {type: String, required: false},
+    groups: [{type: String, required: false}],
+    card_number: {type: String, required: false},
+    expiration: {type: String, required: false},
+    cvv: {type: String, required: false},
+    cardholder_name: {type: String, required: false},
 
 }, {
     collection: 'user-data'

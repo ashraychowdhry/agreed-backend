@@ -13,14 +13,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const mongoose = require('mongoose')
-const CONNECTION_URL = 'mongodb+srv://gayathri:abeona123@cluster0.e3czw.mongodb.net/abeona-mvp-dummy?retryWrites=true&w=majority'
+const CONNECTION_URL = 'mongodb+srv://gayathri:abeona123@cluster0.e3czw.mongodb.net/abeona-mvp-dummy2?retryWrites=true&w=majority'
 mongoose.connect(CONNECTION_URL)
 
 const User = require('./models/user.model')
 const Group = require('./models/group.model')
-const Pin = require('./models/pin.model')
 const Individual = require('./models/individual.model')
-const CreditCard = require('./models/creditcard.model')
 
 const jwt = require('jsonwebtoken')
 
@@ -61,7 +59,7 @@ app.post('/api/login', async (req, res) => {
     }
 
 })
-
+/*
 app.post('/api/dashboard', async (req, res) => {
     
      
@@ -74,10 +72,11 @@ app.post('/api/dashboard', async (req, res) => {
         return res.json({status: 'error', foundPin: false})
     }
 })
-
+*/
 app.post('/api/creategroup', async (req, res) => {
 
     console.log(req.body)
+    var id =  Math.floor(Math.random() * 1000000)
     try {
         await Group.create({
             groupName: req.body.groupName, 
@@ -85,12 +84,11 @@ app.post('/api/creategroup', async (req, res) => {
             maxPrice: req.body.maxPrice,
             earliestDate: req.body.earliestDate,
             latestDate: req.body.latestDate,
+            groupID: id,
+            users: req.body.user
             
         })
-        await Pin.create({
-            securedPin: req.body.securedPin
-        })
-        res.json({status: 'ok'})
+        res.json({status: 'ok', id: id})
     } catch (error) {
         res.json({status: 'error', error: "invalid form input"})
     }
@@ -128,6 +126,29 @@ app.post('/api/individualform', async (req, res) => {
         res.json({status: 'error', error: "invalid form input"})
     }
 })
+
+app.post('/api/joingroup', async (req, res) => {
+    console.log(req.body)
+    try {
+        await User.findOneAndUpdate({_id: req.body.userID}, {groups: groups + req.body.securedPin})
+        await Group.findOneAndUpdate({groups: req.body.securedPin}, {users: users + req.body.userID})
+        res.json({status: 'ok', id: req.body.securedPin})
+    } catch (error) {
+        res.json({status: 'error', error: error.message})
+    }
+})
+
+app.get('/api/getusergroups', async (req, res) => {
+    try {
+        const users = await Group.find({ users: req.body.userId })
+        res.json({status: 'ok', users})
+    } catch (error) {
+        res.json({status: 'error', error: "invalid input"})
+    }
+    
+})
+
+
 
 app.listen(port, () => {
     console.log('Server listening to ' + port)

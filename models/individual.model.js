@@ -6,7 +6,10 @@ const Individual = new mongoose.Schema({
     departure: {type: String, required: true},
     arrivalTime: {type: String, required: true},
     departureTime: {type: String, required: true},
+    originAirport: {type: String, required: true},
     flightPreference: {type: String, required: true},
+    userId: {type: String, required: true},
+    groupPin: {type: String, required: true},
 }, {
     collection: 'individual-data'
 })
