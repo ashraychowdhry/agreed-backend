@@ -135,10 +135,11 @@ app.post('/api/individualform', async (req, res) => {
 app.post('/api/joingroup', async (req, res) => {
     console.log(req.body)
     try {
-        await User.update({email: req.body.userID}, { $push: { groups: req.body.securedPin } });
-        await Group.update({groupID: req.body.securedPin}, { $push: { users: req.body.userID } });
+            await User.update({email: req.body.userID}, { $push: { groups: req.body.securedPin } });
+            await Group.update({groupID: req.body.securedPin}, { $push: { users: req.body.userID } });
+            res.json({status: 'ok', id: req.body.securedPin})
+        
         //await Group.findOneAndUpdate({groupID: req.body.securedPin}, {users: users + req.body.userID})
-        res.json({status: 'ok', id: req.body.securedPin})
     } catch (error) {
         res.json({status: 'error', error: error.message})
     }
@@ -147,7 +148,9 @@ app.post('/api/joingroup', async (req, res) => {
 app.post('/api/getusergroups', async (req, res) => {
     try {
         console.log(req.body.userID)
-        const groups = await Group.find({ users: req.body.userId })
+
+        var id = req.body.userID
+        const groups = await Group.find({ users: id })
         console.log(groups)
         res.json({status: 'ok', groups})
     } catch (error) {
