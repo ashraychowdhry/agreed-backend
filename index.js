@@ -127,7 +127,7 @@ app.post('/api/individualform', async (req, res) => {
             card_number: req.body.card_number,
             expiration: req.body.expiration,
             cvv: req.body.cvv,
-            cardholder_name: req.body.cardholder_name
+            cardholder_name: req.body.cardholder_name,
             originAirport: req.body.originAirport,
              
         })
