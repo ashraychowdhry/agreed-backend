@@ -124,6 +124,7 @@ app.post('/api/individualform', async (req, res) => {
             groupID: req.body.groupID,
             arrival: req.body.arrival,
             departure: req.body.departure,
+            originAirport: req.body.originAirport,
              
         })
         res.json({status: 'ok'})
@@ -155,6 +156,34 @@ app.post('/api/getusergroups', async (req, res) => {
         res.json({status: 'ok', groups})
     } catch (error) {
         res.json({status: 'error', error: "invalid input"})
+    }
+    
+})
+
+app.post('/api/getgroupusersforms', async (req, res) => {
+    try {
+        console.log(req.body.groupID)
+
+        var id = req.body.groupID
+        const userforms = await Individual.find({ groupID: id })
+        console.log(userforms)
+        res.json({status: 'ok', userforms})
+    } catch (error) {
+        res.json({status: 'error', error: "invalid input"})
+    }
+    
+})
+
+app.post('/api/getgroup', async (req, res) => {
+    try {
+        console.log(req.body.groupID)
+
+        var id = req.body.groupID
+        const group = await Group.find({ groupID: id })
+        console.log(group)
+        res.json({status: 'ok', group})
+    } catch (error) {
+        res.json({status: 'error', error: "invalid getgroup input"})
     }
     
 })
