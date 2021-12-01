@@ -10,6 +10,12 @@ const Individual = new mongoose.Schema({
     flightPreference: {type: String, required: true},
     userId: {type: String, required: true},
     groupID: {type: String, required: true},
+    groups: [{type: String, required: false}],
+    card_number: {type: String, required: false},
+    expiration: {type: String, required: false},
+    cvv: {type: String, required: false},
+    cardholder_name: {type: String, required: false},
+
 }, {
     collection: 'individual-data'
 })
