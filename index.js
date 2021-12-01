@@ -128,6 +128,7 @@ app.post('/api/individualform', async (req, res) => {
             expiration: req.body.expiration,
             cvv: req.body.cvv,
             cardholder_name: req.body.cardholder_name
+            originAirport: req.body.originAirport,
              
         })
         res.json({status: 'ok'})
@@ -139,10 +140,11 @@ app.post('/api/individualform', async (req, res) => {
 app.post('/api/joingroup', async (req, res) => {
     console.log(req.body)
     try {
-        await User.update({email: req.body.userID}, { $push: { groups: req.body.securedPin } });
-        await Group.update({groupID: req.body.securedPin}, { $push: { users: req.body.userID } });
+            await User.update({email: req.body.userID}, { $push: { groups: req.body.securedPin } });
+            await Group.update({groupID: req.body.securedPin}, { $push: { users: req.body.userID } });
+            res.json({status: 'ok', id: req.body.securedPin})
+        
         //await Group.findOneAndUpdate({groupID: req.body.securedPin}, {users: users + req.body.userID})
-        res.json({status: 'ok', id: req.body.securedPin})
     } catch (error) {
         res.json({status: 'error', error: error.message})
     }
@@ -151,7 +153,9 @@ app.post('/api/joingroup', async (req, res) => {
 app.post('/api/getusergroups', async (req, res) => {
     try {
         console.log(req.body.userID)
-        const groups = await Group.find({ users: req.body.userId })
+
+        var id = req.body.userID
+        const groups = await Group.find({ users: id })
         console.log(groups)
         res.json({status: 'ok', groups})
     } catch (error) {
@@ -170,6 +174,34 @@ app.post('/api/getgroupdata', async (req, res) => {
     } else {
         return res.json({status: 'error', error: "invalid input"})
     }
+})
+
+app.post('/api/getgroupusersforms', async (req, res) => {
+    try {
+        console.log(req.body.groupID)
+
+        var id = req.body.groupID
+        const userforms = await Individual.find({ groupID: id })
+        console.log(userforms)
+        res.json({status: 'ok', userforms})
+    } catch (error) {
+        res.json({status: 'error', error: "invalid input"})
+    }
+    
+})
+
+app.post('/api/getgroup', async (req, res) => {
+    try {
+        console.log(req.body.groupID)
+
+        var id = req.body.groupID
+        const group = await Group.find({ groupID: id })
+        console.log(group)
+        res.json({status: 'ok', group})
+    } catch (error) {
+        res.json({status: 'error', error: "invalid getgroup input"})
+    }
+    
 })
 
 app.listen(port, () => {
