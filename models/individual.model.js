@@ -15,6 +15,7 @@ const Individual = new mongoose.Schema({
     expiration: {type: String, required: false},
     cvv: {type: String, required: false},
     cardholder_name: {type: String, required: false},
+    tsa_precheck: {type: String, required: false},
 
 }, {
     collection: 'individual-data'

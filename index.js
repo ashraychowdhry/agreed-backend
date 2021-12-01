@@ -2,6 +2,10 @@
 const port = process.env.port || 3001
 
 const express = require('express')
+
+require("dotenv").config()
+const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST)
+
 const app = express()
 app.use(express.json())
 
@@ -22,14 +26,41 @@ const Individual = require('./models/individual.model')
 
 const jwt = require('jsonwebtoken')
 
-app.post('/api/register', async (req, res) => {
+app.post("api/payment", async (req, res) => {
+	let { amount, id } = req.body
+	try {
+		const payment = await stripe.paymentIntents.create({
+			amount,
+			currency: "USD",
+			description: "Booking Flights",
+			payment_method: id,
+			confirm: true
+		})
+		console.log("Payment", payment)
+		res.json({
+			message: "Payment successful",
+			success: true
+		})
+	} catch (error) {
+		console.log("Error", error)
+		res.json({
+			message: "Payment failed",
+			success: false
+		})
+	}
+})
+
+app.post('/register', async (req, res) => {
     console.log(req.body)
     try {
         await User.create({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email, 
-            password: req.body.password
+            password: req.body.password,
+            birthday: req.body.birthday,
+            age: req.body.age,
+            gender: req.body.age,
         })
         // res.send(user)
         res.json({status: 'ok'})
@@ -129,6 +160,7 @@ app.post('/api/individualform', async (req, res) => {
             cvv: req.body.cvv,
             cardholder_name: req.body.cardholder_name,
             originAirport: req.body.originAirport,
+            tsa_precheck: req.body.tsa_precheck
              
         })
         res.json({status: 'ok'})
