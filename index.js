@@ -124,6 +124,10 @@ app.post('/api/individualform', async (req, res) => {
             groupID: req.body.groupID,
             arrival: req.body.arrival,
             departure: req.body.departure,
+            card_number: req.body.card_number,
+            expiration: req.body.expiration,
+            cvv: req.body.cvv,
+            cardholder_name: req.body.cardholder_name
              
         })
         res.json({status: 'ok'})
@@ -156,7 +160,17 @@ app.post('/api/getusergroups', async (req, res) => {
     
 })
 
+app.post('/api/getgroupdata', async (req, res) => {
+    const group = await Group.find({
+        groupID: req.body.currentGroup
+    })
 
+    if (group) {
+        return res.json({status: 'ok', group})
+    } else {
+        return res.json({status: 'error', error: "invalid input"})
+    }
+})
 
 app.listen(port, () => {
     console.log('Server listening to ' + port)
