@@ -4,7 +4,6 @@ const port = process.env.port || 3001
 const express = require('express')
 
 require("dotenv").config()
-const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST)
 
 const app = express()
 app.use(express.json())
@@ -17,60 +16,35 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const mongoose = require('mongoose')
-const CONNECTION_URL = 'mongodb+srv://gayathri:abeona123@cluster0.e3czw.mongodb.net/abeona-mvp-dummy2?retryWrites=true&w=majority'
+const CONNECTION_URL = 'mongodb+srv://sdm_user1:2TWFcIP8KJUZ0p0Jxw@cluster0.hvldl.mongodb.net/test-db-0?retryWrites=true&w=majority'
 mongoose.connect(CONNECTION_URL)
 
-const User = require('./models/user.model')
-const Group = require('./models/group.model')
-const Individual = require('./models/individual.model')
+const System = require('./models/system.model')
 
 const jwt = require('jsonwebtoken')
 
-app.post("api/payment", async (req, res) => {
-	let { amount, id } = req.body
-	try {
-		const payment = await stripe.paymentIntents.create({
-			amount,
-			currency: "USD",
-			description: "Booking Flights",
-			payment_method: id,
-			confirm: true
-		})
-		console.log("Payment", payment)
-		res.json({
-			message: "Payment successful",
-			success: true
-		})
-	} catch (error) {
-		console.log("Error", error)
-		res.json({
-			message: "Payment failed",
-			success: false
-		})
-	}
-})
 
-app.post('/register', async (req, res) => {
+app.post('/api/saveData', async (req, res) => {
     console.log(req.body)
     try {
-        await User.create({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email, 
-            password: req.body.password,
-            birthday: req.body.birthday,
-            age: req.body.age,
-            gender: req.body.age,
+        await System.create({
+            systemToken: req.body.systemToken,
+            systemJSON: req.body.systemJSON,
+            systemName: req.body.systemName,
+            systemIndustry: req.body.systemIndustry,
+            systemCompany: req.body.systemCompany,
+            systemLabels: req.body.systemLabels,
+            systemUnit: req.body.systemUnit,
+            systemTimeUnit: req.body.systemTimeUnit
         })
-        // res.send(user)
         res.json({status: 'ok'})
-        console.log('User created')
+        console.log('System saved to database')
     } catch (error) {
         console.log(error)
-        res.json({status: 'error', error: "Duplicate email"})
+        res.json({status: 'error', error: "Error: System was not saved to database"})
     }
 })
-
+/*
 app.post('/api/login', async (req, res) => {
     const user = await User.findOne({
         email: req.body.email, 
@@ -92,7 +66,7 @@ app.post('/api/login', async (req, res) => {
     }
 
 })
-/*
+
 app.post('/api/dashboard', async (req, res) => {
     
      
@@ -105,7 +79,7 @@ app.post('/api/dashboard', async (req, res) => {
         return res.json({status: 'error', foundPin: false})
     }
 })
-*/
+
 app.post('/api/creategroup', async (req, res) => {
 
     console.log(req.body)
@@ -235,6 +209,8 @@ app.post('/api/getgroup', async (req, res) => {
     }
     
 })
+
+*/
 
 app.listen(port, () => {
     console.log('Server listening to ' + port)
